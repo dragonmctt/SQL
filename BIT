@@ -42,3 +42,4 @@ SELECT COUNT(c.acctnum),avg(Quantity)*price as 'avg amt spent' FROM FebSales F
 LEFT JOIN customers c
 ON F.orderid=c.order_id
 WHERE F.Quantity>2
+
