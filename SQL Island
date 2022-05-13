@@ -1,0 +1,43 @@
+SELECT * FROM inhabitant;
+SELECT * FROM inhabitant 
+  WHERE state = "friendly";
+SELECT * FROM inhabitant 
+  WHERE state = "friendly" AND job = "weaponsmith";
+SELECT * FROM inhabitant 
+  WHERE state = "friendly" AND job LIKE "%smith";
+SELECT personid FROM inhabitant 
+  WHERE name = "Stranger";
+SELECT gold FROM inhabitant 
+  WHERE name = "Stranger";
+SELECT * FROM item 
+  WHERE owner IS NULL;
+UPDATE item SET owner = 20 
+  WHERE owner IS NULL;
+SELECT * FROM item 
+  WHERE owner = 20;
+SELECT * FROM inhabitant 
+  WHERE state = "friendly" AND (job = "dealer" OR job = "merchant");
+UPDATE item SET owner = 15 
+  WHERE item = "ring";  **** not sure of convention to combine these
+UPDATE item SET owner = 15 
+  WHERE item = "teapot";
+UPDATE inhabitant SET name = "Christine" 
+  WHERE personid = 20;
+SELECT * FROM inhabitant 
+  WHERE job = "baker" ORDER BY gold DESC;
+SELECT * FROM inhabitant 
+  WHERE job = "pilot";
+SELECT inhabitant.name FROM inhabitant, village 
+	WHERE inhabitant.personid = village.chief AND village.name = "Onionville";
+SELECT COUNT(*) FROM inhabitant, village 
+	WHERE village.villageid = inhabitant.villageid AND village.name = "Onionville" AND gender = "f";
+SELECT inhabitant.name FROM inhabitant, village 
+	WHERE village.villageid = inhabitant.villageid AND village.name = "Onionville" AND gender = "f";
+SELECT SUM(inhabitant.gold) FROM inhabitant 
+	WHERE job = "baker" OR job = "dealer" OR job = "merchant";
+SELECT state, AVG(inhabitant.gold) FROM inhabitant 
+  GROUP BY state ORDER BY AVG(inhabitant.gold);
+DELETE FROM inhabitant 
+  WHERE name = 'Dirty Diane';
+UPDATE inhabitant SET state = 'friendly' 
+  WHERE state = 'kidnapped';
