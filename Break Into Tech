@@ -1,8 +1,11 @@
+--Using the data from Break Into Tech, I queried the database using SQL to answer SQLite practice questions.
+
+
 --1 How many orders were placed in January?
 
 SELECT COUNT(orderID) FROM JanSales;
 
-2 How many of those orders were for an iPhone?
+--2 How many of those orders were for an iPhone?
 
 SELECT COUNT(orderID) FROM JanSales WHERE Product = 'iPhone';
 
@@ -27,7 +30,7 @@ SELECT Product, price, SUM(Quantity), SUM(Quantity)*price as Revenue FROM JanSal
 SELECT location, Product, Quantity, price, SUM(Quantity*price) as 'Total Revenue' FROM FebSales 
     WHERE location = '548 Lincoln St, Seattle, WA 98101';
     
---OR ----
+--OR
 select 
 sum(Quantity), 
 product, 
@@ -48,3 +51,115 @@ WHERE F.Quantity>2
 SELECT Product,SUM(Quantity) as 'Number Sold' FROM FebSales
 WHERE location LIKE '%Los Angeles%'
 GROUP BY Product
+
+--Primary Question:  List all the products sold in Los Angeles in February, and include how many of each were sold.
+
+SELECT Product, SUM(quantity)
+FROM BIT_DB.FebSales 
+WHERE location like '%Los Angeles%'
+GROUP BY Product;
+
+--Primary Question:  How many locations are there in New York that sold more than 1 product in January?
+
+    --How many locations total?
+    SELECT DISTINCT location  FROM JanSales;
+
+    --9162 Total Locations
+
+    --How many locations in NY?
+    SELECT DISTINCT location  FROM JanSales
+        WHERE location LIKE '%NY%';
+
+    --1235 locations in NY
+
+    --How many products sold at each of these locations in January?
+    SELECT DISTINCT location, SUM(Quantity) FROM JanSales
+        WHERE location LIKE '%NY%'
+        GROUP BY location;
+
+--How many locations are there in New York that sold more than 1 product in January?  
+
+SELECT DISTINCT location, SUM(Quantity) sum FROM JanSales
+    WHERE location LIKE '%NY%'
+    GROUP BY location
+    HAVING sum > 1;
+
+--182
+
+--Primary Question:  How many of each type of headphone were sold in February?
+
+SELECT DISTINCT Product, SUM(Quantity) FROM FebSales
+    GROUP BY Product
+    HAVING Product LIKE '%headphone%';
+
+--Apple Airpods Headphones	1013
+--Bose SoundSport Headphones	844
+--Wired Headphones	1282
+
+--Primary Question:  Which locations in New York received at least 3 orders in January, and how many orders did they each receive?
+
+SELECT distinct location, count(orderID) FROM JanSales
+    WHERE location LIKE '%NY%'
+    GROUP BY location
+    HAVING count(orderID)>2;
+
+--148 Elm St, New York City, NY 10001	3
+--515 Lincoln St, New York City, NY 10001	3
+--916 Pine St, New York City, NY 10001	3
+--961 Jefferson St, New York City, NY 10001	4
+
+
+--Primary Question:  What was the average amount spent per account in February? 
+
+    --TOTAL spent each account number
+    SELECT SUM (quantity*price) total, c.acctnum FROM FebSales f
+        LEFT JOIN customers c
+        ON c.order_id = f.orderID
+        GROUP BY c.acctnum;
+
+    --Individual account total for Feb
+    SELECT SUM(quantity*price), c.acctnum FROM FebSales f
+        LEFT JOIN customers c
+        ON c.order_id = f.orderID
+        GROUP BY c.acctnum
+        HAVING c.acctnum = 10060051;
+
+    -- $623.94
+
+    --ALL account totals by account for Feb 
+    SELECT SUM(quantity*price), c.acctnum FROM FebSales f
+        LEFT JOIN customers c
+        ON c.order_id = f.orderID
+        GROUP BY c.acctnum;
+
+    --12020 accounts
+
+--AVG account totals for Feb
+SELECT SUM (quantity*price)/COUNT(c.acctnum) FROM FebSales f
+LEFT JOIN customers c
+ON c.order_id = f.orderID;
+
+--181.46163239830634
+
+--Primary Question:  What was the average quantity of products purchased per account in February? 
+SELECT SUM (quantity)/COUNT(c.acctnum) FROM FebSales f
+    LEFT JOIN customers c
+    ON c.order_id = f.orderID;
+
+--1.06851226318108
+
+--Primary Question:  Which product brought in the most revenue in January and how much revenue did it bring in total?
+
+    --ALL products
+    SELECT product, SUM(quantity*price) total FROM JanSales
+        GROUP BY product
+        ORDER BY total DESC;
+
+--Only highest product
+    SELECT product, SUM(quantity*price) total FROM JanSales
+        GROUP BY product
+        ORDER BY total DESC
+        LIMIT 1;
+
+--Macbook Pro Laptop	399500
+
