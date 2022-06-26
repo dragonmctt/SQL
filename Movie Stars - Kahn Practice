@@ -1,3 +1,4 @@
+--https://www.khanacademy.org/computing/computer-programming/sql
 --Create table about the people and what they do here
 
 CREATE TABLE famous_people (id INTEGER PRIMARY KEY, full_name TEXT, dob TEXT);
